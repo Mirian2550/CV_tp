@@ -396,10 +396,10 @@ config = BackgroundObfuscationConfig(
     },
     blur_background=True,
     blur_level=10,
-    background_image_path='img_1.png'
+    background_image_path='ejercicio_1/img_1.png'
 )
 
 background_obfuscation = BackgroundObfuscation(config)
 background_obfuscation.run(mode='camera')
 # background_obfuscation.run(mode='image', source='img.png')
-#background_obfuscation.run(mode='video', source='video.mp4')
+# background_obfuscation.run(mode='video', source='video1.mp4')
