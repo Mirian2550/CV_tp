@@ -1,10 +1,12 @@
 import cv2
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
-from detectron2.data import MetadataCatalog
+from detectron2.data import MetadataCatalog, DatasetCatalog
 import numpy as np
 import logging
 from abc import ABC, abstractmethod
+from detectron2 import model_zoo
+from detectron2.data.datasets import register_coco_instances
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -57,25 +59,27 @@ class PearStrategy(FruitStrategy):
     def contar_frutas(self, mask, detected_fruits, detected_positions, frame, keypoints_current, descriptors_current):
         self.contar_y_marcar('pera', mask, detected_fruits, detected_positions, frame, keypoints_current, descriptors_current)
 
-# Registrar la metadata de tu dataset personalizado
-from detectron2.data import MetadataCatalog
+# Registrar el dataset para obtener la metadata
+# Suponiendo que tienes un conjunto de validación con anotaciones en formato COCO
+valid_dataset_path = "valid"  # Cambia esto a la ruta donde está tu dataset de validación
+register_coco_instances("fruit_dataset_valid", {}, f"{valid_dataset_path}/_annotations.coco.json", valid_dataset_path)
 
-# Definir tus clases personalizadas
-custom_classes = ['manzana', 'banana', 'naranja', 'pera']
-
-# Registrar la metadata para tu dataset
-fruit_metadata = MetadataCatalog.get("fruit_dataset")
-fruit_metadata.set(thing_classes=custom_classes)
+# Obtener la metadata de tus clases personalizadas
+fruit_metadata = MetadataCatalog.get("fruit_dataset_valid")
+custom_classes = fruit_metadata.thing_classes  # Obtiene las clases desde la metadata registrada
 
 class FruitCounter:
     def __init__(self, estrategias):
         self.cfg = get_cfg()
-        # Cargar tu archivo de configuración personalizado
-        self.cfg.merge_from_file("/Users/miri/CV_tp/modelos/deteccion_objetos/config.yaml")
-        # Cargar los pesos de tu modelo personalizado
+        # Cargar la configuración base del modelo que usaste para entrenar
+        self.cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
+        # Ajustar el número de clases
+        self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(custom_classes)
+        # Cargar los pesos de tu modelo entrenado
         self.cfg.MODEL.WEIGHTS = "/Users/miri/CV_tp/modelos/deteccion_objetos/model_final.pth"
-        self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
-        self.cfg.MODEL.DEVICE = 'cpu'
+        self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # Puedes ajustar este umbral
+        self.cfg.MODEL.DEVICE = 'cpu'  # Cambia a 'cuda' si tienes GPU y quieres usarla
+        self.cfg.DATALOADER.NUM_WORKERS = 0  # Para evitar problemas de multiprocessing
         self.predictor = DefaultPredictor(self.cfg)
         self.estrategias = estrategias
         self.detected_fruits = {cls: 0 for cls in custom_classes}
@@ -88,7 +92,7 @@ class FruitCounter:
         pred_classes = instances.pred_classes
         pred_masks = instances.pred_masks
         for i, class_id in enumerate(pred_classes):
-            # Usar tu metadata personalizada para obtener el nombre de la clase
+            # Obtener el nombre de la clase desde la metadata
             class_name = fruit_metadata.thing_classes[class_id]
             estrategia = self.estrategias.get(class_name)
             if estrategia:
