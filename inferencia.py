@@ -13,7 +13,7 @@ register_coco_instances("fruit_dataset_valid", {}, f"{valid_dataset_path}/_annot
 # Configuración del modelo
 cfg = get_cfg()
 cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
-cfg.MODEL.WEIGHTS = "./deteccion_objetos/model_final.pth"  # Ruta al modelo entrenado
+cfg.MODEL.WEIGHTS = "./modelos/deteccion_objetos/model_final.pth"  # Ruta al modelo entrenado
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # Umbral de confianza para predicciones
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 8  # Ajustar al número de clases que tengas
 cfg.DATASETS.TEST = ("fruit_dataset_valid",)  # Usar el dataset de validación
