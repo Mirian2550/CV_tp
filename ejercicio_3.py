@@ -262,7 +262,7 @@ thresholds_per_class = {
 }
 
 # Ruta al modelo entrenado
-model_weights = "./modelos/deteccion_objetos/model_final.pth"
+model_weights = "./_modelos/deteccion_objetos/model_final.pth"
 
 # Crear una instancia de FruitDetector
 fruit_detector = FruitDetector(model_weights, class_names, thresholds_per_class)

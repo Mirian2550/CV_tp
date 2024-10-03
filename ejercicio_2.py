@@ -284,7 +284,7 @@ estrategias_frutas = {
     'pear': PearStrategy()
 }
 
-model_path = "./modelos/segmentacion/model_final.pth"
+model_path = "_modelos/segmentacion/model_final.pth"
 
 processor = SegmentationProcessor(model_path, class_names, thresholds_per_class, delay=2000,
                                   estrategias=estrategias_frutas)

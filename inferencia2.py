@@ -18,7 +18,7 @@ thresholds_per_class = {
 # Configuración del modelo
 cfg = get_cfg()
 cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
-cfg.MODEL.WEIGHTS = "./modelos/deteccion_objetos/model_final.pth"  # Ruta al modelo entrenado
+cfg.MODEL.WEIGHTS = "./_modelos/deteccion_objetos/model_final.pth"  # Ruta al modelo entrenado
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(class_names)  # Ajustar al número de clases que tienes
 cfg.MODEL.DEVICE = 'cpu'  # Usar CPU
 

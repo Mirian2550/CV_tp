@@ -19,7 +19,7 @@ thresholds_per_class = {
 # Configuración del modelo de segmentación
 cfg = get_cfg()
 cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
-cfg.MODEL.WEIGHTS = "./modelos/segmentacion/model_final.pth"  # Ruta al modelo entrenado
+cfg.MODEL.WEIGHTS = "./_modelos/segmentacion/model_final.pth"  # Ruta al modelo entrenado
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(class_names)  # Ajustar al número de clases
 cfg.MODEL.DEVICE = 'cpu'  # Usar CPU
 
