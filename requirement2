@@ -10,3 +10,4 @@ pydantic
 opencv-python
 gdown
 git+https://github.com/facebookresearch/detectron2.git
+supervision
